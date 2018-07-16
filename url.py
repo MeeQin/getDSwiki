@@ -49,6 +49,7 @@ if __name__ == "__main__":
                 list_L3.append(a.string)
             gameInfo_L3.append(list_L3)
         print(gameInfo_L3)
+        
 
     print('End.')
     
