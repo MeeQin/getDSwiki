@@ -27,4 +27,5 @@ if __name__ == "__main__":
     # print(html_path)
     html = open(html_path, mode='rb')
     bf = BeautifulSoup(html,'html.parser')
+    
 
