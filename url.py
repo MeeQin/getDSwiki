@@ -82,6 +82,9 @@ if __name__ == "__main__":
         Category_dict[a.string] = a['href']
     print(Category_dict)
 
+    # get article
+    # <article id="WikiaMainContent" class="WikiaMainContent">
+    
 
     print('End.')
     
