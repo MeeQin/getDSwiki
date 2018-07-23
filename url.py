@@ -12,6 +12,7 @@
 #git@github.com:MeeQin/getDSwiki.git
 
 import os
+import json
 import requests
 from bs4 import BeautifulSoup
 
@@ -65,48 +66,54 @@ def getMenu(url):
 if __name__ == "__main__":
 
     main_url = "http://zh.dontstarve.wikia.com"
-    # print(getMenu(main_url))
-
-
-    keyurl = '/wiki/%E5%90%88%E6%88%90'
-    keyword = '可合成'
-    # getInfo(keyurl)
-    url = main_url + keyurl
-    response = requests.get(url = url)
-    html = response.text   
-
-    bf = BeautifulSoup(html,'html.parser')
-
-    # getCategory(bf)
-    Category_dict = {}
-    Category_div = bf.find('div', class_='page-header__categories-links')
-    for a in Category_div.find_all('a'):
-        Category_dict[a.string] = a['href']
-    print(Category_dict)
-
-    # get article
-    # <article id="WikiaMainContent" class="WikiaMainContent">
-    article = bf.find_all('article', class_='WikiaMainContent')
-    # print(article)
+    menu = getMenu(main_url)
     path = os.getcwd()
-    filename = keyword + '.html'
-    article_path = os.path.join(path, "html", "wiki", "article", filename)
-    # print(article_path)
-    article_f = open(article_path, mode='w',encoding='utf-8')
-    meta = '''
-    < !doctype html >
-    < html lang = "zh" dir = "ltr" class ="" >
-    < head >
-    < meta http - equiv = "Content-Type" content = "text/html; charset=UTF-8" >
-    < meta name = "viewport" content = "width=device-width, initial-scale=1.0, user-scalable=yes" >
-    < /head >   \n'''
-    # article_f.write(meta)
-    article_s = str(article)
-    article_s = article_s[1:]
-    article_s = article_s[:-1]
-    article_f.write(str(article_s))
-    article_f.close()
+    tree_path = os.path.join(path, "resource", "tree.json")
+    with open(tree_path, mode='w', encoding='utf-8') as f:
+        json = json.dumps(menu,sort_keys=True,indent =4,separators=(',', ': '),ensure_ascii=False )
+        # json = json.encode("utf-8")
+        f.write(json)
 
-    print('End.')
+
+    # keyurl = '/wiki/%E5%90%88%E6%88%90'
+    # keyword = '可合成'
+    # # getInfo(keyurl)
+    # url = main_url + keyurl
+    # response = requests.get(url = url)
+    # html = response.text   
+
+    # bf = BeautifulSoup(html,'html.parser')
+
+    # # getCategory(bf)
+    # Category_dict = {}
+    # Category_div = bf.find('div', class_='page-header__categories-links')
+    # for a in Category_div.find_all('a'):
+    #     Category_dict[a.string] = a['href']
+    # print(Category_dict)
+
+    # # get article
+    # # <article id="WikiaMainContent" class="WikiaMainContent">
+    # article = bf.find_all('article', class_='WikiaMainContent')
+    # # print(article)
+    # path = os.getcwd()
+    # filename = keyword + '.html'
+    # article_path = os.path.join(path, "html", "wiki", "article", filename)
+    # # print(article_path)
+    # article_f = open(article_path, mode='w',encoding='utf-8')
+    # meta = '''
+    # < !doctype html >
+    # < html lang = "zh" dir = "ltr" class ="" >
+    # < head >
+    # < meta http - equiv = "Content-Type" content = "text/html; charset=UTF-8" >
+    # < meta name = "viewport" content = "width=device-width, initial-scale=1.0, user-scalable=yes" >
+    # < /head >   \n'''
+    # # article_f.write(meta)
+    # article_s = str(article)
+    # article_s = article_s[1:]
+    # article_s = article_s[:-1]
+    # article_f.write(str(article_s))
+    # article_f.close()
+
+    # print('End.')
     
 
