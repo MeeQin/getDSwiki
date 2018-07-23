@@ -11,52 +11,106 @@
 #CreateTime:2018-07-23
 #git@github.com:MeeQin/getDSwiki.git
 
+import os
 import sys
+import json
 from PyQt5.QtWidgets import *
 from mainwindow import *
 
 
+def getTreeJson():
+    '''
+    :FunctionName: getTreeJson
+    :param: 
+    :ReturnType: 
+    :CreateBy: qinmin-006646
+    :CreateTime: 2018-07-23
+    :Description: 
+    '''
+    path = os.getcwd()
+    tree_path = os.path.join(path, "resource", "tree.json")
+    with open(tree_path, mode='r', encoding='utf-8') as f:   
+        data = json.load(f)
+        return data
+
+def getMenuJson():
+    '''
+    :FunctionName: getMenuJson
+    :param: 
+    :ReturnType: 
+    :CreateBy: qinmin-006646
+    :CreateTime: 2018-07-23
+    :Description: 
+    '''
+    path = os.getcwd()
+    menu_path = os.path.join(path, "resource", "menu.json")
+    with open(menu_path, mode='r', encoding='utf-8') as f:   
+        data = json.load(f)
+        return data    
+
 class MyWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MyWindow, self).__init__(parent)
-        self.setWindowTitle('getDSwiki')
         self.setupUi(self)
         self.treeInit()
     
     def treeInit(self):
         
         # 设置列数
-        self.treeWidget.setColumnCount(2)
+        self.treeWidget.setColumnCount(1)
         # 设置头的标题
-        self.treeWidget.setHeaderLabels(['Key','Value'])
-        # 设置根节点
-        root= QTreeWidgetItem(self.treeWidget)
-        root.setText(0,'root')
-        # 设置列宽
-        self.treeWidget.setColumnWidth(0, 160)
-        
-        # 设置子节点1
-        child1 = QTreeWidgetItem(root)
-        child1.setText(0,'child1')
-        child1.setText(1,'ios')
-        
-        # 设置子节点2
-        child2 = QTreeWidgetItem(root)
-        child2.setText(0,'child2')
-        child2.setText(1,'')      
+        self.treeWidget.setHeaderLabels(['关键字'])
+        # 隐藏标题
+        self.treeWidget.setHeaderHidden(True)
 
-        # 设置子节点3
-        child3 = QTreeWidgetItem(child2)
-        child3.setText(0,'child3')
-        child3.setText(1,'android')
-
+        # 从json文件获取dict
+        data = getTreeJson()
+        for key1 in data:
+            # 设置根节点
+            root= QTreeWidgetItem(self.treeWidget)
+            root.setText(0,key1)
+            list1 = data[key1]
+            for index in range(0,len(list1)-1):
+                # type(data[key1]) = list
+                for key2 in list1[index]:
+                    # data[key1][index][key2] = dict
+                    child1 = QTreeWidgetItem(root)
+                    child1.setText(0,key2)       
+                    for key3 in list1[index][key2]:
+                        child2 = QTreeWidgetItem(child1)
+                        child2.setText(0,key3)                    
         self.treeWidget.addTopLevelItem(root)
-
-        # 结点全部展开
+        # 节点全部展开
         self.treeWidget.expandAll()
+
+        self.treeWidget.itemClicked.connect(self.treeOnClick)
+
+    def treeOnClick(self, item, column):
+        '''
+        :FunctionName: 
+        :param: 
+        :ReturnType: 
+        :CreateBy: qinmin-006646
+        :CreateTime: 
+        :Description: 
+        '''
+        print(item.text(0))
+        item_text = item.text(0)
+        menu_dict = getMenuJson()
+        url = menu_dict[item_text]
+        filename = url + ".html"
+        path = os.getcwd()
+        print(path)
+        html_path = os.path.join(path, "html")   
+        print(html_path)    
+        html_path = os.path.join(html_path, filename)   
+        with open(html_path, mode='r', encoding='utf-8') as html:
+            textBrowser.insertPlainText(html)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     myWin = MyWindow()
     myWin.show()
     sys.exit(app.exec_())
+

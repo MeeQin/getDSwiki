@@ -39,6 +39,7 @@ def getMenu(url):
     bf = BeautifulSoup(html,'html.parser')
 
     gameInfo_Dict = {}
+    gameInfo_Menu = {}
     gameInfo_L2 = []
 
     gameInfo = bf.find("li", class_="wds-tabs__tab")
@@ -58,21 +59,26 @@ def getMenu(url):
             # print(a['href'])
             gameInfo_Dict[gameInfo_L1][index][gameInfo_L2[index]][a.string] = a['href']
             # {'遊戲資料': [{'遊戲功能': {'可合成': '/wiki/%E5%90%88%E6%88%90', ...}}]}
+            gameInfo_Menu[a.string] = a['href']
         index = index +1
 
+    path = os.getcwd()
+    tree_path = os.path.join(path, "resource", "tree.json")
+    menu_path = os.path.join(path, "resource", "menu.json")
+    with open(tree_path, mode='w', encoding='utf-8') as f:
+        data = json.dumps(gameInfo_Dict,sort_keys=True,indent =4,separators=(',', ': '),ensure_ascii=False )
+        f.write(data)
+    with open(menu_path, mode='w', encoding='utf-8') as f:
+        data = json.dumps(gameInfo_Menu,sort_keys=True,indent =4,separators=(',', ': '),ensure_ascii=False )
+        f.write(data)
     return gameInfo_Dict
 
 
 if __name__ == "__main__":
 
     main_url = "http://zh.dontstarve.wikia.com"
-    menu = getMenu(main_url)
-    path = os.getcwd()
-    tree_path = os.path.join(path, "resource", "tree.json")
-    with open(tree_path, mode='w', encoding='utf-8') as f:
-        json = json.dumps(menu,sort_keys=True,indent =4,separators=(',', ': '),ensure_ascii=False )
-        # json = json.encode("utf-8")
-        f.write(json)
+    getMenu(main_url)
+
 
 
     # keyurl = '/wiki/%E5%90%88%E6%88%90'
