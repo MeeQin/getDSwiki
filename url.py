@@ -61,15 +61,15 @@ def getMenu(url):
     gameInfo_Dict[gameInfo_L1] = [] # {'遊戲資料': []}
 
     for span in gameInfo.find('div', class_='wds-dropdown__content').find_all('span'):
-        gameInfo_L2.append(span.string)
-        gameInfo_Dict[gameInfo_L1].append({span.string : {}})
+        gameInfo_L2.append(cht_to_chs(span.string))
+        gameInfo_Dict[gameInfo_L1].append({cht_to_chs(span.string) : {}})
         # {'遊戲資料': [{'遊戲功能': {}, {'角色': {}, ...}]}
 
     index = 0
     for div in gameInfo.find_all('div', class_='wds-dropdown-level-2__content'):
         list_L3 = []
         for a in div.find_all('a'):
-            list_L3.append(a.string)
+            list_L3.append(cht_to_chs(a.string))
             # print(a['href'])
             gameInfo_Dict[gameInfo_L1][index][gameInfo_L2[index]][cht_to_chs(a.string)] = a['href']
             # {'遊戲資料': [{'遊戲功能': {'可合成': '/wiki/%E5%90%88%E6%88%90', ...}}]}
@@ -87,52 +87,76 @@ def getMenu(url):
         f.write(data)
     return gameInfo_Dict
 
-if __name__ == "__main__":
+def getArticle(keyword, keyurl):
+    '''
+    :FunctionName: getArticle
+    :param: 
+    :ReturnType: 
+    :CreateBy: qinmin-006646-HomePC
+    :CreateTime: 
+    :Description: 
+    '''
+    url = main_url + keyurl
+    response = requests.get(url = url)
+    html = response.text   
 
-    main_url = "http://zh.dontstarve.wikia.com"
-    getMenu(main_url)
-
-
-
-    # keyurl = '/wiki/%E5%90%88%E6%88%90'
-    # keyword = '可合成'
-    # # getInfo(keyurl)
-    # url = main_url + keyurl
-    # response = requests.get(url = url)
-    # html = response.text   
-
-    # bf = BeautifulSoup(html,'html.parser')
+    bf = BeautifulSoup(html,'html.parser')
 
     # # getCategory(bf)
     # Category_dict = {}
     # Category_div = bf.find('div', class_='page-header__categories-links')
     # for a in Category_div.find_all('a'):
-    #     Category_dict[a.string] = a['href']
+    #     if 'href' in a :
+    #         Category_dict[a.string] = a['href']
     # print(Category_dict)
 
-    # # get article
-    # # <article id="WikiaMainContent" class="WikiaMainContent">
-    # article = bf.find_all('article', class_='WikiaMainContent')
-    # # print(article)
-    # path = os.getcwd()
-    # filename = keyword + '.html'
-    # article_path = os.path.join(path, "html", "wiki", "article", filename)
-    # # print(article_path)
-    # article_f = open(article_path, mode='w',encoding='utf-8')
-    # meta = '''
-    # < !doctype html >
-    # < html lang = "zh" dir = "ltr" class ="" >
-    # < head >
-    # < meta http - equiv = "Content-Type" content = "text/html; charset=UTF-8" >
-    # < meta name = "viewport" content = "width=device-width, initial-scale=1.0, user-scalable=yes" >
-    # < /head >   \n'''
-    # # article_f.write(meta)
-    # article_s = str(article)
-    # article_s = article_s[1:]
-    # article_s = article_s[:-1]
-    # article_f.write(str(article_s))
-    # article_f.close()
+    # get article
+    # <article id="WikiaMainContent" class="WikiaMainContent">
+    article = bf.find_all('article', class_='WikiaMainContent')
+    path = os.getcwd()
+    filename = keyword + '.html'
+    article_path = os.path.join(path, "html", "wiki", "article", filename)
+    with open(article_path, mode='w',encoding='utf-8') as article_f:
+        # Category_s = str(Category_div)
+        # Category_s = Category_s[1:]
+        # Category_s = Category_s[:-1]   
+        # Category_lines = Category_s.splitlines()
+        # for line in Category_lines:
+        #     line_chs = cht_to_chs(line)
+        #     article_f.writelines(line_chs)
 
-    # print('End.')
+        article_s = str(article)
+        article_s = article_s[1:]
+        article_s = article_s[:-1]
+        article_lines = article_s.splitlines()
+        for line in article_lines:
+            line_chs = cht_to_chs(line)
+            article_f.writelines(line_chs)
+
+if __name__ == "__main__":
+
+    main_url = "http://zh.dontstarve.wikia.com"
+    # getMenu(main_url)
+
+    path = os.getcwd()
+    menu_path = os.path.join(path, "resource", "menu.json")
+    with open(menu_path, mode='r', encoding='utf-8') as f:
+        data = f.read()
+        menu = json.loads(data)
+        print(menu)
+    
+    for keyword in menu:
+        print(keyword)
+        keyurl = menu[keyword]
+        getArticle(keyword,keyurl)
+
+
+    keyurl = '/wiki/%E5%90%88%E6%88%90'
+    keyword = '可合成'
+    # getInfo(keyurl)
+
+    
+
+    print('End.')
     
 
