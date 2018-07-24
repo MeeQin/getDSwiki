@@ -96,16 +96,14 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         '''
         print(item.text(0))
         item_text = item.text(0)
-        menu_dict = getMenuJson()
-        url = menu_dict[item_text]
-        filename = url + ".html"
+        filename = item_text + ".html"
         path = os.getcwd()
-        print(path)
-        html_path = os.path.join(path, "html")   
-        print(html_path)    
-        html_path = os.path.join(html_path, filename)   
-        with open(html_path, mode='r', encoding='utf-8') as html:
-            textBrowser.insertPlainText(html)
+        print(path)  
+        article_path = os.path.join(path, "html", "wiki", "article", filename)
+        print(article_path)    
+        with open(article_path, mode='r', encoding='utf-8') as article:
+            data = article.read()
+            self.textBrowser.insertPlainText(data)
 
 
 if __name__ == '__main__':
