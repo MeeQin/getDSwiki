@@ -17,7 +17,7 @@ import json
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QUrl
 from mainwindow import *
-from langconv import *
+
 
 def getTreeJson():
     '''
@@ -49,17 +49,6 @@ def getMenuJson():
         data = json.load(f)
         return data    
 
-def cht_to_chs(line):
-    # 转换繁体到简体
-    line = Converter('zh-hans').convert(line)
-    line.encode('utf-8')
-    return line
-
-def chs_to_cht(line):
-    # 转换简体到繁体
-    line = Converter('zh-hant').convert(line)
-    line.encode('utf-8')
-    return line
 
 class MyWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):

@@ -15,6 +15,20 @@ import os
 import json
 import requests
 from bs4 import BeautifulSoup
+from langconv import *
+
+
+def cht_to_chs(line):
+    # 转换繁体到简体
+    line = Converter('zh-hans').convert(line)
+    line.encode('utf-8')
+    return line
+
+def chs_to_cht(line):
+    # 转换简体到繁体
+    line = Converter('zh-hant').convert(line)
+    line.encode('utf-8')
+    return line
 
 def getMenu(url):
     '''
@@ -43,7 +57,7 @@ def getMenu(url):
     gameInfo_L2 = []
 
     gameInfo = bf.find("li", class_="wds-tabs__tab")
-    gameInfo_L1 = gameInfo.find('span').string
+    gameInfo_L1 = cht_to_chs(gameInfo.find('span').string)
     gameInfo_Dict[gameInfo_L1] = [] # {'遊戲資料': []}
 
     for span in gameInfo.find('div', class_='wds-dropdown__content').find_all('span'):
@@ -57,9 +71,9 @@ def getMenu(url):
         for a in div.find_all('a'):
             list_L3.append(a.string)
             # print(a['href'])
-            gameInfo_Dict[gameInfo_L1][index][gameInfo_L2[index]][a.string] = a['href']
+            gameInfo_Dict[gameInfo_L1][index][gameInfo_L2[index]][cht_to_chs(a.string)] = a['href']
             # {'遊戲資料': [{'遊戲功能': {'可合成': '/wiki/%E5%90%88%E6%88%90', ...}}]}
-            gameInfo_Menu[a.string] = a['href']
+            gameInfo_Menu[cht_to_chs(a.string)] = a['href']
         index = index +1
 
     path = os.getcwd()
@@ -72,7 +86,6 @@ def getMenu(url):
         data = json.dumps(gameInfo_Menu,sort_keys=True,indent =4,separators=(',', ': '),ensure_ascii=False )
         f.write(data)
     return gameInfo_Dict
-
 
 if __name__ == "__main__":
 
