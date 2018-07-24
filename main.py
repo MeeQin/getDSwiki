@@ -99,11 +99,9 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         item_text = item.text(0)
         filename = item_text + ".html"
         path = os.getcwd()
-        print(path)  
         article_path = os.path.join(path, "html", "wiki", "article", filename)
-        # article_path = 'file:\\\\\\E:\\getDSwiki\\getDSwiki\\html\\wiki\\article\\可合成.html'
-        print(article_path)    
-        url = QUrl(article_path)
+        # 从本地文件打开html文件
+        url = QUrl.fromLocalFile(article_path)
         self.webView.load(url)
 
 
