@@ -7,6 +7,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtCore import QUrl
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -23,9 +25,9 @@ class Ui_MainWindow(object):
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(900, 0, 124, 30))
         self.pushButton.setObjectName("pushButton")
-        self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
-        self.textBrowser.setGeometry(QtCore.QRect(200, 30, 824, 693))
-        self.textBrowser.setObjectName("textBrowser")
+        self.webView = QWebEngineView(self.centralwidget)
+        self.webView.setGeometry(QtCore.QRect(200, 30, 824, 693))
+        self.webView.setObjectName("webView")
         self.treeWidget = QtWidgets.QTreeWidget(self.centralwidget)
         self.treeWidget.setGeometry(QtCore.QRect(0, 0, 200, 723))
         self.treeWidget.setObjectName("treeWidget")

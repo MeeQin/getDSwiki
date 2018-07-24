@@ -15,6 +15,7 @@ import os
 import sys
 import json
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QUrl
 from mainwindow import *
 
 
@@ -100,10 +101,10 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         path = os.getcwd()
         print(path)  
         article_path = os.path.join(path, "html", "wiki", "article", filename)
+        # article_path = 'file:\\\\\\E:\\getDSwiki\\getDSwiki\\html\\wiki\\article\\可合成.html'
         print(article_path)    
-        with open(article_path, mode='r', encoding='utf-8') as article:
-            data = article.read()
-            self.textBrowser.insertPlainText(data)
+        url = QUrl(article_path)
+        self.webView.load(url)
 
 
 if __name__ == '__main__':
