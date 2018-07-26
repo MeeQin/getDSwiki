@@ -12,6 +12,7 @@
 #git@github.com:MeeQin/getDSwiki.git
 
 import os
+import re
 import json
 import requests
 from bs4 import BeautifulSoup
@@ -48,7 +49,6 @@ def getMenu(url):
     # html_path = os.path.join(path, "html", "main.html")
     # print(html_path)
     # with open(html_path, mode='rb') as html:
-    #   html = open(html_path, mode='rb')
 
     bf = BeautifulSoup(html,'html.parser')
 
@@ -138,17 +138,41 @@ if __name__ == "__main__":
     main_url = "http://zh.dontstarve.wikia.com"
     # getMenu(main_url)
 
-    path = os.getcwd()
-    menu_path = os.path.join(path, "resource", "menu.json")
-    with open(menu_path, mode='r', encoding='utf-8') as f:
-        data = f.read()
-        menu = json.loads(data)
-        print(menu)
+    # path = os.getcwd()
+    # menu_path = os.path.join(path, "resource", "menu.json")
+    # with open(menu_path, mode='r', encoding='utf-8') as f:
+    #     data = f.read()
+    #     menu = json.loads(data)
+    #     print(menu)
     
-    for keyword in menu:
-        print(keyword)
-        keyurl = menu[keyword]
-        getArticle(keyword,keyurl)
+    # for keyword in menu:
+    #     print(keyword)
+    #     keyurl = menu[keyword]
+    #     getArticle(keyword,keyurl)
+
+    path = os.getcwd()
+    test_path = "E:\\getDSwiki\\getDSwiki\\html\\test-可合成.html"
+    with open(test_path, mode='r', encoding='utf-8') as f:
+        html = f.read()
+        bf = BeautifulSoup(html,'html.parser')
+        for table in bf.find_all('table', class_='wikitable'):
+            print(table.attrs)
+            for img in table.find_all('img'):
+                #print(img.attrs)
+                if 'data-src' in img.attrs.keys():
+                    data_src = img['data-src']
+                    data_image_name = img['data-image-name']
+                    m = re.search('dont-starve-game/(.*)/revision',data_src)
+                    if m:
+                        print(m.groups(1))
+                elif 'src' in img.attrs.keys():
+                    data_src = img['src']
+                    data_image_name = img['data-image-name']
+                    m = re.search('dont-starve-game/(.*)/revision',data_src)
+                    if m:
+                        print(m.groups(1))                    
+
+
 
 
     keyurl = '/wiki/%E5%90%88%E6%88%90'
@@ -158,5 +182,21 @@ if __name__ == "__main__":
     
 
     print('End.')
+
+
+def downloadImg(url, path):
+    '''
+    :FunctionName: downloadImg
+    :param: 
+    :ReturnType: 
+    :CreateBy: qinmin-006646
+    :CreateTime: 
+    :Description: 
+    '''
+    
+    response = requests.get(url = url)
+    html = response.text
+    
+
     
 
