@@ -133,6 +133,58 @@ def getArticle(keyword, keyurl):
             line_chs = cht_to_chs(line)
             article_f.writelines(line_chs)
 
+def getImgFile(bf):
+    '''
+    :FunctionName: 
+    :param: 
+    :ReturnType: 
+    :CreateBy: qinmin-006646-HomePC
+    :CreateTime: 
+    :Description: 
+    '''
+    path = os.getcwd()
+    img_path = os.path.join(path, 'html')
+
+    for img in bf.find_all('img'):
+        #print(img.attrs)
+        if 'data-src' in img.attrs.keys():
+            data_src = img['data-src']
+            data_image_name = img['data-image-name']
+            m = re.search('dont-starve-game/(.*)/revision',data_src)
+            if m:
+                img_name = m.groups()[0]
+                print(m.groups()[0])
+        elif 'src' in img.attrs.keys():
+            data_src = img['src']
+            data_image_name = img['data-image-name']
+            m = re.search('dont-starve-game/(.*)/revision',data_src)
+            if m:
+                img_name = m.groups()[0]
+                print(m.groups()[0])  
+        
+        img_name = img_name.replace('/', '\\')
+        response = requests.get(url = data_src)
+        html = response.content            
+        img_data_path = os.path.join(img_path, img_name)
+        [dirpath, imgname] = os.path.split(img_data_path)
+        if not os.path.exists(img_data_path):
+            if not os.path.isdir(dirpath):  
+                os.makedirs(dirpath)
+            with open(img_data_path, mode='wb') as f:
+                f.write(html)          
+
+def replaceImgSrc(bf):
+    '''
+    :FunctionName: 
+    :param: 
+    :ReturnType: 
+    :CreateBy: qinmin-006646-HomePC
+    :CreateTime: 
+    :Description: 
+    '''
+    for img in bf.find_all('img'):
+        print('ok')
+
 if __name__ == "__main__":
 
     main_url = "http://zh.dontstarve.wikia.com"
@@ -149,31 +201,12 @@ if __name__ == "__main__":
     #     print(keyword)
     #     keyurl = menu[keyword]
     #     getArticle(keyword,keyurl)
-
     path = os.getcwd()
-    test_path = "E:\\getDSwiki\\getDSwiki\\html\\test-可合成.html"
+    test_path = "C:\\getDSwiki\\getDSwiki\\html\\test-可合成.html"
     with open(test_path, mode='r', encoding='utf-8') as f:
         html = f.read()
         bf = BeautifulSoup(html,'html.parser')
-        for table in bf.find_all('table', class_='wikitable'):
-            print(table.attrs)
-            for img in table.find_all('img'):
-                #print(img.attrs)
-                if 'data-src' in img.attrs.keys():
-                    data_src = img['data-src']
-                    data_image_name = img['data-image-name']
-                    m = re.search('dont-starve-game/(.*)/revision',data_src)
-                    if m:
-                        print(m.groups(1))
-                elif 'src' in img.attrs.keys():
-                    data_src = img['src']
-                    data_image_name = img['data-image-name']
-                    m = re.search('dont-starve-game/(.*)/revision',data_src)
-                    if m:
-                        print(m.groups(1))                    
-
-
-
+        getImgFile(bf)
 
     keyurl = '/wiki/%E5%90%88%E6%88%90'
     keyword = '可合成'
@@ -184,18 +217,6 @@ if __name__ == "__main__":
     print('End.')
 
 
-def downloadImg(url, path):
-    '''
-    :FunctionName: downloadImg
-    :param: 
-    :ReturnType: 
-    :CreateBy: qinmin-006646
-    :CreateTime: 
-    :Description: 
-    '''
-    
-    response = requests.get(url = url)
-    html = response.text
     
 
     
